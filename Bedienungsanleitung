@@ -1,0 +1,95 @@
+Bedienungsanleitung:
+
+---Einschränkungen---
+Zahlungsempfängername: max 70 Zeichen
+Verwendungszweck (Remittance (Text)): max 140 Zeichen
+
+---Erstmaliger Software-Start---
+Sie werden bei erstmaliger Nutzung der Software dazu aufgefordert, dass Sie Ihren Namen, IBAN und BIC angeben.
+Sie speichern diese Eingaben mit einem Klick auf den "Speichern"-Button ab und Ihre Daten werden in kommenden Sitzungen automatisch geladen.
+
+---Bearbeiten von Kontodaten---
+Sie können Ihre Daten mithilfe des "Bearbeiten"-Buttons bearbeiten. 
+Bitte geben Sie für Namen, IBAN und BIC überall einen passenden Eintrag an.
+Während der Bearbeitung Ihrer Daten ist die Nutzung anderer Funktionen eingeschränkt.
+Mit einem Klick auf den "Speichern"-Button werden die Daten abgespeichert und Sie erlangen wieder Zugriff auf alle Funktionen des Programms.
+Ihre Daten werden innerhalb der user_data.txt Datei abgespeichert.
+
+---QR-Code Generierung---
+Für die Generierung eines QR-Codes muss ein Geldbetrag, ein Zweck und der Wirtschaftsraum angegeben werden.
+
+Der Geldbetrag ist als Zahlenwert anzugeben, welcher die Centbeträge entweder mit Punkt (.) oder mit Komma (,) beschreibt.
+Die verwendete Währung ist standardmäßig in Euro und eine Veränderung der verwendeten Währung benötigt eine Weiterentwicklung des Programmes.
+
+Der Zweck ist ein maximal 140 Zeichen langes Eingabefeld, welches verschiedene Informationen enthalten kann, welche für Sie zur Einordnung der Zahlung relevant sein könnten, wie beispielsweise bestimmte Aktenzeichen.
+
+Der Wirtschaftsraum unterscheidet zwischen einem reinen Europäischen-Wirtschaftsraum (1) und einem Wirtschaftsraum, welcher die Länder im Europäischen-Wirtschaftsraum und im Nicht-Europäischen-Wirtschaftsraum (2) enthält.
+Der Zahlungsverkehr in (2) benötigt die Angabe der BIC im QR-Code, wobei die BIC in beiden Fällen mit im QR-Code enthalten ist.
+
+Nach Eingabe der relevanten Daten erstellen Sie einen QR-Code mit einem Klick auf den "QRCode erstellen"-Button.
+Der QR-Code wird in Form der "file.png" Datei im Pfad des Programmes abgespeichert und kann nun in Dokumenten verwendet werden.
+Bei der Generierung eines neuen QR-Codes wird diese Datei überschrieben und der alte QR-Code geht verloren.
+
+---Einstellungen---
+Einstellungen sind grob in der settings.txt Datei festgeschrieben und werden bei Programmstart geladen.
+Sollte keine settings.txt Datei bisher existieren, dann erstellt das Programm eine eigene settings.txt Datei im Programmpfad.
+Die Standardwerte einer automatisch erstellten settings.txt Datei sind folgende:
+Service Tag = 'BCD'
+Character Set = '1'
+Identification = 'SCT'
+
+Das Service Tag ist standardisiert 'BCD' und es gibt keine anderen Varianten.
+
+Für das Character Set gibt es die Zahlenwerte von 1-8, welche eingetragen werden können. Diese Werte stehen für verschiedene Schriftzeichensets.
+    1 = UTF-8
+    2 = ISO 8859-1 Latin-1, Westeuropäisch
+    3 = ISO 8859-2 Latin 2, Mitteleuropäisch
+    4 = ISO 8859-4 Latin 4, Nordeuropäisch
+    5 = ISO 8859-5 Kyrillisch
+    6 = ISO 8859-7 Griechisch
+    7 = ISO 8859-10 Latin-6, Nordisch
+    8 = ISO 8859-15 Latin-9, Westeuropäisch
+    von Wikipedia: https://de.wikipedia.org/wiki/EPC-QR-Code?useskin=vector
+
+Identification hat 2 Angaben, welche gemacht werden können.
+    SCT  = SEPA CREDIT TRANSFER
+    INST = SEPA Instant Credit Transfer
+
+settings.txt Reihenfolge:
+1. Service Tag
+2. Character Set
+3. Identification
+
+user_data.txt Reihenfolge:
+1. BIC
+2. Payname
+3. IBAN
+
+---EPC QR-Code-Standard---
+Der EPC-QR-Code-Standard enthält verschiedene Positionen:
+1. Service Tag
+2. Version                      =       Wirtschaftsraum
+3. Character Set
+4. Identification
+5. BIC
+6. Name
+7. IBAN
+8. Amount
+9. Purpose                      =       fest definierte SEPA-Service-Codes
+10. Remittance (Reference)
+11. Remittance (Text)           =       Zweck-Eingabefeld
+12. Information
+
+Die Felder 9-12 sind optional.
+Das Programm erlaubt es, dass die folgenden Felder manipuliert werden können:
+ "Service Tag", "Character Set", "Identification" über die settings.txt Datei
+ "BIC", "Name", "IBAN" über die Benutzeroberfläche und die user_data.txt  Datei
+ "Amount", "Remittance (Text)" über die Benutzeroberfläche
+
+ Folgende Felder können derzeit nicht manipuliert werden:
+ "Remittance (Reference)" https://de.wikipedia.org/wiki/Strukturierte_Kreditorreferenz?useskin=vector
+ "Information"
+ "Purpose" fest definierte SEPA-Service-Codes
+
+ Die Nutzung von Remittance (Text) schließt die Nutzung von Remittance (Reference) aus.
+ Andersherum würde die Nutzung von Remittance (Reference) die Nutzung von Remittance (Text) ausschließen.
