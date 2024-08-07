@@ -321,6 +321,9 @@ class MainWindow():
             filename = createFileName(file_name_addition_var=file_name_addition_var)
             image2.save(filename)
             if(os.path.exists(filename)):
+                self.amount.set("")
+                self.remittance_text.set("")
+                self.file_name_addition.set("")
                 self.creation_notification_label.config(text="QR-Code wurde erstellt!!!")
                 self.creation_notification_label.config(foreground="green") 
                 self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
