@@ -286,13 +286,13 @@ class MainWindow():
 
             mandatory_array = [service_tag_var,version_var,character_set_var,identification_var,bic_var,payname_var,iban_var,amount_var]
             for entry in mandatory_array:
-                print(str(entry))
+                #print(str(entry))
                 if(entry is None or entry==""):
-                    print("Entry is missing")
+                    #print("Entry is missing")
                     return "404" 
                 pass
         except:
-            print("Error happened, figure it out for yourself")
+            #print("Error happened, figure it out for yourself")
             pass
         try:
             purpose_var = self.purpose.get()
@@ -305,7 +305,7 @@ class MainWindow():
             #print("Error in optional Entries")
             pass
         result = checkMandatory(mandatory_array=mandatory_array)
-        print(result)
+        #print(result)
         if(result==""):
             QR_String = createQRString(optional_array=optional_array,mandatory_array=mandatory_array)
             qrcode.make(QR_String)
