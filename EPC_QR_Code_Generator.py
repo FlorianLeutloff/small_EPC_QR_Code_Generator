@@ -4,7 +4,7 @@ from tkinter import PhotoImage
 import qrcode
 import os.path
 import os
-
+import datetime
 
 class MainWindow():
     def __init__(self, mainframe):
@@ -22,6 +22,8 @@ class MainWindow():
         self.remittance_reference = StringVar() #optional
         self.remittance_text = StringVar() #optional
         self.information = StringVar() #optional
+
+        self.file_name_addition = StringVar()
 
         if(os.path.exists("settings.txt")):
             settings_file = open("settings.txt","r")
@@ -87,10 +89,17 @@ class MainWindow():
         self.version_entry = ttk.OptionMenu(mainframe, self.version, *self.option_list)
         self.version_entry.grid(column=2,row=6,sticky=(W),padx=(20,20))
 
-        self.create_QR_Code_Button = ttk.Button(mainframe, text="QRCode erstellen", command=self.createQRCode)
-        self.create_QR_Code_Button.grid(column=2, row=7, sticky=(W),padx=(20,20))
 
-        self.creation_notification_label = ttk.Label(mainframe, text="QR-Code wurde erstellt!!!")
+        ttk.Label(mainframe, text="Zusätzlicher Dateiname:").grid(column=2, row=7, sticky=(W),padx=(20,20))
+        self.file_name_addition_entry = ttk.Entry(mainframe, width = entry_field_width, textvariable=self.file_name_addition)
+        self.file_name_addition_entry.grid(column=2, row=8, sticky=(W),padx=(20,20))
+
+
+        self.create_QR_Code_Button = ttk.Button(mainframe, text="QRCode erstellen", command=self.createQRCode)
+        self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
+
+        self.creation_notification_label = ttk.Label(mainframe)
+        self.error_message_label = ttk.Label(mainframe)
         #self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
 
         ### Start Up Situation ###
@@ -166,6 +175,59 @@ class MainWindow():
         pass
 
     def createQRCode(self):
+        def checkMandatory(mandatory_array):
+            Error_String = ""
+            if(mandatory_array[0]=="" or mandatory_array[0] is None):
+                Error_String = Error_String + "000 - Service_tag fehlt, fragen Sie den Hersteller oder nutzen Sie die Bedienungsanleitung mit der settings.txt Datei; \n"
+                pass
+            if(mandatory_array[1]=="" or mandatory_array[1] is None):
+                Error_String = Error_String + "001 - Wirtschaftsraum fehlt; \n"
+                pass
+            if(mandatory_array[2]=="" or mandatory_array[2] is None):
+                Error_String = Error_String + "002 - Character_Set fehlt, fragen Sie den Hersteller oder nutzen Sie die Bedienungsanleitung mit der settings.txt Datei; \n"
+                pass
+            if(mandatory_array[3]=="" or mandatory_array[3] is None):
+                Error_String = Error_String + "003 - Identification fehlt, fragen Sie den Hersteller oder nutzen Sie die Bedienungsanleitung mit der settings.txt Datei; \n"
+                pass
+            if(mandatory_array[4]=="" or mandatory_array[4] is None):
+                Error_String = Error_String + "004 - BIC fehlt, schauen Sie ob die BIC eingegeben ist, schauen Sie alternativ nach dem Fehlercode in der Bedienungsanleitung; \n"
+                pass
+            if(mandatory_array[5]=="" or mandatory_array[5] is None):
+                Error_String = Error_String + "005 - Zahlungsempfänger-Name fehlt, schauen Sie ob der Zahlungsempfänger-Name eingegeben ist, schauen Sie alternativ nach dem Fehlercode in der Bedienungsanleitung; \n"
+                pass
+            if(mandatory_array[6]=="" or mandatory_array[6] is None):
+                Error_String = Error_String + "006 - IBAN fehlt, schauen Sie ob die IBAN eingegeben ist, schauen Sie alternativ nach dem Fehlercode in der Bedienungsanleitung; \n"
+                pass
+            if(mandatory_array[7]=="" or mandatory_array[7] is None):
+                Error_String = Error_String + "007 - Ein Fehler ist bei der Erfassung des Geldbetrages entstanden, bitte wenden Sie sich an den Hersteller; \n"
+                pass
+            if(mandatory_array[7]=="EUR"):
+                Error_String = Error_String + "008 - Geldbetrag fehlt, schauen Sie ob der Geldbetrag eingetragen ist, schauen Sie alternativ nach dem Fehlercode in der Bedienungsanleitung; \n"
+                pass
+            return Error_String
+            pass
+
+        def createFileName(file_name_addition_var):
+            #File name Standard:
+            # [Counting_Number]_[YYYY]_[MM]_[DD]_[file_name_addition]
+            if(os.path.exists("counting_file.txt")):
+                counting_file = open("counting_file.txt","r")
+                new_number = str(int(counting_file.read()) + 1)
+                counting_file.close()
+                counting_file = open("counting_file.txt","w")
+                counting_file.write(new_number)
+                counting_file.close()
+                pass
+            else:
+                counting_file = open("counting_file.txt","w")
+                counting_file.write("0")
+                counting_file.close()
+                new_number = "0"
+                pass
+            present_day = datetime.datetime.now()
+            file_name = str(new_number)+"_"+str(present_day.year)+"_"+str(present_day.month)+"_"+str(present_day.day)+"_"+str(file_name_addition_var)+".png"
+            return file_name
+        
         def createQRString(optional_array, mandatory_array):
             def checkOptional(optional_array):
                 counter = 0
@@ -224,12 +286,13 @@ class MainWindow():
 
             mandatory_array = [service_tag_var,version_var,character_set_var,identification_var,bic_var,payname_var,iban_var,amount_var]
             for entry in mandatory_array:
+                print(str(entry))
                 if(entry is None or entry==""):
-                    #print("Entry is missing")
+                    print("Entry is missing")
                     return "404" 
                 pass
         except:
-            #print("Error happened, figure it out for yourself")
+            print("Error happened, figure it out for yourself")
             pass
         try:
             purpose_var = self.purpose.get()
@@ -241,22 +304,55 @@ class MainWindow():
         except:
             #print("Error in optional Entries")
             pass
-        QR_String = createQRString(optional_array=optional_array,mandatory_array=mandatory_array)
-        #print(QR_String)
-        qrcode.make(QR_String)
-        image2 = qrcode.make(QR_String)
-        image2.save("file.png")
+        result = checkMandatory(mandatory_array=mandatory_array)
+        print(result)
+        if(result==""):
+            QR_String = createQRString(optional_array=optional_array,mandatory_array=mandatory_array)
+            qrcode.make(QR_String)
+            image2 = qrcode.make(QR_String)
+            try: 
+                file_name_addition_var = self.file_name_addition.get()
+                if(file_name_addition_var is None or file_name_addition_var==""):
+                    file_name_addition_var = ""
+                pass
+            except:
+                file_name_addition_var = "File_Name_Error"
+                pass
+            filename = createFileName(file_name_addition_var=file_name_addition_var)
+            image2.save(filename)
+            if(os.path.exists(filename)):
+                self.creation_notification_label.config(text="QR-Code wurde erstellt!!!")
+                self.creation_notification_label.config(foreground="green") 
+                self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
+                self.creation_notification_label.after(2000,self.destroyNotification)
+                pass
+            else:
+                self.creation_notification_label.config(text="QR-Code konnte nicht erstellt werden aus unbekannten Gründen")
+                self.creation_notification_label.config(foreground="red")                   
+                self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
+                self.creation_notification_label.after(2000,self.destroyNotification)
+                pass
+        else:
+            self.creation_notification_label.config(text="QR-Code konnte nicht erstellt werden, Fehlercodes verschwinden nach 20 Sekunden")
+            self.creation_notification_label.config(foreground="red")                   
+            self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
+            self.creation_notification_label.after(5000,self.destroyNotification)
+            self.error_message_label.config(text=result)
+            self.error_message_label.config(foreground="red")                   
+            self.error_message_label.grid(column=2,row=11, sticky=(W),padx=(20,20))
+            self.error_message_label.after(20000,self.destroyNotification)            
 
-        if(os.path.exists("file.png")):
-            self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
-            self.creation_notification_label.after(2000,self.destroyNotification)
+
+            pass
+
+        #, text="QR-Code wurde erstellt!!!"
 
 
 
         ### Creates Label to notify User of QR-Code having been created ###
         #There is no functionality or checking attached to this yet, so it will probably appear even if generation fails :)
-        self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
-        self.creation_notification_label.after(2000,self.destroyNotification)
+        #self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
+        #self.creation_notification_label.after(2000,self.destroyNotification)
     pass    
  
 def main():

@@ -65,6 +65,62 @@ user_data.txt Reihenfolge:
 2. Payname
 3. IBAN
 
+---Fehler Codes---
+
+000 Das Service Tag fehlt:
+    Das Service Tag sollte bei Programmstart in den settings.txt festgeschrieben stehen.
+    Überprüfen Sie ob eine settings.txt Datei existiert. Überprüfen Sie dann, ob in der ersten Zeile der Wert 'BCD' oder ein anderer nicht leerer Wert steht.
+    Sollte keine settings.txt existieren, dann starten Sie das Programm neu und schauen, ob nach einem Programmstart eine settings.txt Datei erstellt wurde.
+    Sollte bei Programmstart keine settings.txt Datei erstellt werden, dann wenden Sie sich bitte an den Hersteller.
+
+001 Wirtschaftsraum (Version) fehlt:
+    Schauen Sie ob ein Wirtschaftsraum ausgewählt wurde.
+    Sollte der Fehler weiter bestehen, dann wenden Sie sich bitte an den Hersteller.
+
+002 Das Character Set fehlt:
+    Das Character Set sollte bei Programmstart in den settings.txt festgeschrieben stehen.
+    Überprüfen Sie ob eine settings.txt Datei existiert. Überprüfen Sie dann, ob in der zweiten Zeile ein Zahlenwert von 1 bis 8 steht.
+    Sollte keine settings.txt existieren, dann starten Sie das Programm neu und schauen, ob nach einem Programmstart eine settings.txt Datei erstellt wurde.
+    Sollte bei Programmstart keine settings.txt Datei erstellt werden, dann wenden Sie sich bitte an den Hersteller.    
+
+003 Identification fehlt:
+    Die Identification sollte bei Programmstart in den settings.txt festgeschrieben stehen.
+    Überprüfen Sie ob eine settings.txt Datei existiert. Überprüfen Sie dann, ob in der dritten Zeile der Wert SCT oder INST steht. 
+    Sollte keine settings.txt existieren, dann starten Sie das Programm neu und schauen, ob nach einem Programmstart eine settings.txt Datei erstellt wurde.
+    Sollte bei Programmstart keine settings.txt Datei erstellt werden, dann wenden Sie sich bitte an den Hersteller.
+
+004 BIC fehlt:
+    Die BIC sollte bei Programmstart in der user_data.txt festgeschrieben stehen.
+    Überprüfen Sie ob eine user_data.txt Datei existiert. Bei erstmaligem Programmstart sollten Sie dazu gezwungen werden eine BIC einzugeben, bevor Sie Ihre Daten abspeichern können und QR-Codes generieren können.
+    Sollte nach einer Eingabe der BIC und Speicherung der Fehler weiter vorhanden sein, dann besteht die Möglichkeit, dass die BIC an die erste Zeile in der user_data.txt Datei manuell eingefügt wird.
+    Bitte informieren Sie bei der letzten Notlösung den Hersteller von dem Problem.
+
+005 Zahlungsempfängername (Payname) fehlt:
+    Der Zahlungsempfängername sollte bei Programmstart in der user_data.txt festgeschrieben stehen.
+    Überprüfen Sie ob eine user_data.txt Datei existiert. Bei erstmaligem Programmstart sollten Sie dazu gezwungen werden einen Zahlungsempfängername einzugeben, bevor Sie Ihre Daten abspeichern können und QR-Codes generieren können.
+    Sollte nach einer Eingabe des Zahlungsempfängernamen und Speicherung der Fehler weiter vorhanden sein, dann besteht die Möglichkeit, dass der Zahlungsempfängername an die zweite Zeile in der user_data.txt Datei manuell eingefügt wird.
+    Bitte informieren Sie bei der letzten Notlösung den Hersteller von dem Problem.
+
+006 IBAN fehlt:
+    Die IBAN sollte bei Programmstart in der user_data.txt festgeschrieben stehen.
+    Überprüfen Sie ob eine user_data.txt Datei existiert. Bei erstmaligem Programmstart sollten Sie dazu gezwungen werden eine IBAN einzugeben, bevor Sie Ihre Daten abspeichern können und QR-Codes generieren können.
+    Sollte nach einer Eingabe der IBAN und Speicherung der Fehler weiter vorhanden sein, dann besteht die Möglichkeit, dass die IBAN an die dritte Zeile in der user_data.txt Datei manuell eingefügt wird.
+    Bitte informieren Sie bei der letzten Notlösung den Hersteller von dem Problem.
+
+007 Geldbetrag (amount) fehlt: 
+    Ein Fehler ist bei der Erfassung des Geldbetrages aufgetreten, welcher unabhängig von Ihren Eingaben sein sollte.
+    Bitte wenden Sie sich an den Hersteller.
+
+    In diesem Fehler existiert kein Wert für den Geldbetrag, sodass nicht einmal Vorsätze wie EUR vorhanden sind.
+
+008 Geldbetrag (amount) fehlt:
+    Der Zusatz EUR ist automatisch vorhanden, jedoch fehlt ein Geldbetrag.
+    Bitte überprüfen Sie Ihre Eingaben. Sollte der Fehler sich weiter fortsetzen, dann benachrichtigen Sie bitte den Hersteller.
+
+
+
+
+
 ---EPC QR-Code-Standard---
 Der EPC-QR-Code-Standard enthält verschiedene Positionen:
 1. Service Tag
