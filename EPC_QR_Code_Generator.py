@@ -173,6 +173,10 @@ class MainWindow():
     def destroyNotification(self):
         self.creation_notification_label.grid_remove()
         pass
+    
+    def destroyError(self):
+        self.error_message_label.grid_remove()
+        pass
 
     def createQRCode(self):
         def checkMandatory(mandatory_array):
@@ -336,14 +340,14 @@ class MainWindow():
                 self.creation_notification_label.after(2000,self.destroyNotification)
                 pass
         else:
-            self.creation_notification_label.config(text="QR-Code konnte nicht erstellt werden, Fehlercodes verschwinden nach 20 Sekunden")
+            self.creation_notification_label.config(text="QR-Code konnte nicht erstellt werden, Fehlercodes verschwinden nach 12 Sekunden")
             self.creation_notification_label.config(foreground="red")                   
             self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
             self.creation_notification_label.after(5000,self.destroyNotification)
             self.error_message_label.config(text=result)
             self.error_message_label.config(foreground="red")                   
             self.error_message_label.grid(column=2,row=11, sticky=(W),padx=(20,20))
-            self.error_message_label.after(20000,self.destroyNotification)            
+            self.error_message_label.after(12000,self.destroyError)            
 
 
             pass
