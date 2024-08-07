@@ -90,6 +90,9 @@ class MainWindow():
         self.create_QR_Code_Button = ttk.Button(mainframe, text="QRCode erstellen", command=self.createQRCode)
         self.create_QR_Code_Button.grid(column=2, row=7, sticky=(W),padx=(20,20))
 
+        self.creation_notification_label = ttk.Label(mainframe, text="QR-Code wurde erstellt!!!")
+        #self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
+
         ### Start Up Situation ###
         if(self.user_data_entry_startup):
             self.bic_entry.config(state="ENABLED")
@@ -156,6 +159,10 @@ class MainWindow():
         self.create_QR_Code_Button.configure(state=DISABLED)
         self.edit_userdata_button.configure(state=DISABLED)
         self.save_userdata_button.configure(state="ENABLED")
+        pass
+
+    def destroyNotification(self):
+        self.creation_notification_label.grid_remove()
         pass
 
     def createQRCode(self):
@@ -239,6 +246,17 @@ class MainWindow():
         qrcode.make(QR_String)
         image2 = qrcode.make(QR_String)
         image2.save("file.png")
+
+        if(os.path.exists("file.png")):
+            self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
+            self.creation_notification_label.after(2000,self.destroyNotification)
+
+
+
+        ### Creates Label to notify User of QR-Code having been created ###
+        #There is no functionality or checking attached to this yet, so it will probably appear even if generation fails :)
+        self.creation_notification_label.grid(column=2,row=8, sticky=(W),padx=(20,20))
+        self.creation_notification_label.after(2000,self.destroyNotification)
     pass    
  
 def main():
