@@ -4,3 +4,6 @@ file.png
 *.png
 counting_file.txt
 EPC_QR_Code_Generator.pyw
+*.spec
+\build
+\dist
