@@ -5,6 +5,9 @@ import qrcode
 import os.path
 import os
 import datetime
+import io
+import PIL.Image
+import win32clipboard
 
 class MainWindow():
     def __init__(self, mainframe):
@@ -24,6 +27,8 @@ class MainWindow():
         self.information = StringVar() #optional
 
         self.file_name_addition = StringVar()
+
+        self.last_filename = ""
 
         if(os.path.exists("settings.txt")):
             settings_file = open("settings.txt","r")
@@ -95,8 +100,16 @@ class MainWindow():
         self.file_name_addition_entry.grid(column=2, row=8, sticky=(W),padx=(20,20))
 
 
-        self.create_QR_Code_Button = ttk.Button(mainframe, text="QRCode erstellen", command=self.createQRCode)
-        self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
+        self.second_grid = ttk.Frame(mainframe)
+        self.second_grid.grid(column=2, row=9, sticky=(W),padx=(20,20))
+
+        self.create_QR_Code_Button = ttk.Button(self.second_grid, text="QRCode erstellen", command=self.createQRCode)
+        #self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
+        self.create_QR_Code_Button.grid(column=1, row=1, sticky=(W),padx=(0,20))
+
+        self.copy_QR_Code_Button = ttk.Button(self.second_grid, text="Zwischenablage kopieren", command=self.copyQRCodeToClipboard, state=DISABLED)
+        #self.copy_QR_Code_Button.grid(column=3, row=9, sticky=(W),padx=(20,20))
+        self.copy_QR_Code_Button.grid(column=2, row=1, sticky=(W),padx=(0,0))
 
         self.creation_notification_label = ttk.Label(mainframe)
         self.error_message_label = ttk.Label(mainframe)
@@ -117,6 +130,32 @@ class MainWindow():
             self.startup_label = ttk.Label(mainframe, text="Keine Nutzerdaten vorhanden, bitte hinterlegen Sie Ihre Daten")
             self.startup_label.grid(column=1, row=9, sticky=(W))
             pass           
+        pass
+    ### Copies the last created QR Code from the filepath into the clipboard to be pasted elsewhere ###
+    def copyQRCodeToClipboard(self):
+        if(self.last_filename == "" or self.last_filename is None):
+            self.creation_notification_label.config(text="Es kein Dateipfad zu einem in dieser Sitzung erstellten QR-Code bekannt.")
+            self.creation_notification_label.config(foreground="red")                   
+            self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
+            self.creation_notification_label.after(5000,self.destroyNotification)
+            pass
+        else:
+            try:
+                image = PIL.Image.open(self.last_filename)
+                memory_image = io.BytesIO()
+                image.convert("RGB").save(memory_image, "BMP")
+                byte_array = memory_image.getvalue()[14:]
+                memory_image.close()
+                image.close()
+                win32clipboard.OpenClipboard()
+                win32clipboard.EmptyClipboard()
+                win32clipboard.SetClipboardData(win32clipboard.CF_DIB, byte_array)
+                win32clipboard.CloseClipboard()
+            except:
+                self.creation_notification_label.config(text="009 - Fehler bei Kopie in die Zwischenablage, wenden Sie sich an den Hersteller")
+                self.creation_notification_label.config(foreground="red")                   
+                self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
+                self.creation_notification_label.after(5000,self.destroyNotification)
         pass
 
     def saveData(self):
@@ -325,6 +364,8 @@ class MainWindow():
             filename = createFileName(file_name_addition_var=file_name_addition_var)
             image2.save(filename)
             if(os.path.exists(filename)):
+                self.last_filename = filename
+                self.copy_QR_Code_Button.config(state="ENABLED")
                 self.amount.set("")
                 self.remittance_text.set("")
                 self.file_name_addition.set("")

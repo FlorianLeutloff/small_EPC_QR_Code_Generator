@@ -117,6 +117,10 @@ user_data.txt Reihenfolge:
     Der Zusatz EUR ist automatisch vorhanden, jedoch fehlt ein Geldbetrag.
     Bitte überprüfen Sie Ihre Eingaben. Sollte der Fehler sich weiter fortsetzen, dann benachrichtigen Sie bitte den Hersteller.
 
+009 Fehler bei Kopie in die Zwischenablage:
+    Bei diesem Fehler ist ein Pfad zu einer bereits erstellten QR-Code-Datei bekannt und im Programm im Zwischenspeicher gespeichert.
+    Wenden Sie sich an den Hersteller, wenn dieser Fehler auftritt.
+
 
 
 
