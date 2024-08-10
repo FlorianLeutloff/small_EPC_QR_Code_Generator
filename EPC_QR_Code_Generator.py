@@ -28,24 +28,27 @@ class MainWindow():
 
         self.file_name_addition = StringVar()
 
+        self.automatic_clipboard = StringVar()
         self.last_filename = ""
 
         if(os.path.exists("settings.txt")):
             settings_file = open("settings.txt","r")
             lines = settings_file.readlines()
-            settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n","")}
+            settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n",""),"autoclipboard":lines[3].replace("\n","")}
             settings_file.close()
         else:
-            settings_dictionary = {"service_tag":"BCD","character_set":"1","identification":"SCT"}
+            settings_dictionary = {"service_tag":"BCD","character_set":"1","identification":"SCT","autoclipboard":"1"}
             new_settings_file = open("settings.txt","a")
             new_settings_file.write(settings_dictionary["service_tag"]+"\n")
             new_settings_file.write(settings_dictionary["character_set"]+"\n")
-            new_settings_file.write(settings_dictionary["identification"])
+            new_settings_file.write(settings_dictionary["identification"]+"\n")
+            new_settings_file.write(settings_dictionary["autoclipboard"])
             new_settings_file.close()
             pass
         self.service_tag.set(settings_dictionary["service_tag"])
         self.character_set.set(settings_dictionary["character_set"])
         self.identification.set(settings_dictionary["identification"])
+        self.automatic_clipboard.set(settings_dictionary["autoclipboard"])
 
         if(os.path.exists("user_data.txt")):
             user_data_file = open("user_data.txt","r")
@@ -107,9 +110,12 @@ class MainWindow():
         #self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
         self.create_QR_Code_Button.grid(column=1, row=1, sticky=(W),padx=(0,20))
 
-        self.copy_QR_Code_Button = ttk.Button(self.second_grid, text="In Zwischenablage kopieren", command=self.copyQRCodeToClipboard, state=DISABLED)
-        #self.copy_QR_Code_Button.grid(column=3, row=9, sticky=(W),padx=(20,20))
-        self.copy_QR_Code_Button.grid(column=2, row=1, sticky=(W),padx=(0,0))
+        ### IF an automatic clipboard is not enabled in the settings, then the button and functionality to copy to the clipboard is made visible to the user ###
+        if(self.automatic_clipboard.get()=="0"):
+            self.copy_QR_Code_Button = ttk.Button(self.second_grid, text="In Zwischenablage kopieren", command=self.copyQRCodeToClipboard, state=DISABLED)
+            #self.copy_QR_Code_Button.grid(column=3, row=9, sticky=(W),padx=(20,20))
+            self.copy_QR_Code_Button.grid(column=2, row=1, sticky=(W),padx=(0,0))
+            pass
 
         self.creation_notification_label = ttk.Label(mainframe)
         self.error_message_label = ttk.Label(mainframe)
@@ -364,8 +370,16 @@ class MainWindow():
             filename = createFileName(file_name_addition_var=file_name_addition_var)
             image2.save(filename)
             if(os.path.exists(filename)):
+                ### Copy to Clipboard function regulation ###
                 self.last_filename = filename
-                self.copy_QR_Code_Button.config(state="ENABLED")
+                if(self.automatic_clipboard.get()=="0"):
+                    self.copy_QR_Code_Button.config(state="ENABLED")
+                    pass
+                if(self.automatic_clipboard.get()=="1"):
+                    self.copyQRCodeToClipboard()
+                    pass
+
+
                 self.amount.set("")
                 self.remittance_text.set("")
                 self.file_name_addition.set("")

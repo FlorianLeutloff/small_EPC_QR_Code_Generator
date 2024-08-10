@@ -37,6 +37,7 @@ Die Standardwerte einer automatisch erstellten settings.txt Datei sind folgende:
 Service Tag = 'BCD'
 Character Set = '1'
 Identification = 'SCT'
+Automatic_Clipboard = 1
 
 Das Service Tag ist standardisiert 'BCD' und es gibt keine anderen Varianten.
 
@@ -55,10 +56,15 @@ Identification hat 2 Angaben, welche gemacht werden können.
     SCT  = SEPA CREDIT TRANSFER
     INST = SEPA Instant Credit Transfer
 
+Automatic_Clipboard hat 2 Angaben, welche gemacht werden können.
+    0 = Automatic_Clipboard ist deaktiviert und der Button zum "In Zwischenanlage kopieren" ist zugänglich.
+    1 = Automatic_Clipboard ist aktiviert und der QR-Code wird als Bild mit der Erstellung in die Zwischenablage kopiert ohne, dass der Benutzer weitere Aktionen ausführen muss
+
 settings.txt Reihenfolge:
 1. Service Tag
 2. Character Set
 3. Identification
+4. automatic_clipboard
 
 user_data.txt Reihenfolge:
 1. BIC
@@ -153,3 +159,4 @@ Das Programm erlaubt es, dass die folgenden Felder manipuliert werden können:
 
  Die Nutzung von Remittance (Text) schließt die Nutzung von Remittance (Reference) aus.
  Andersherum würde die Nutzung von Remittance (Reference) die Nutzung von Remittance (Text) ausschließen.
+
