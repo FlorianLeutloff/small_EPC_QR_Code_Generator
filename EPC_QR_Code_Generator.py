@@ -107,7 +107,7 @@ class MainWindow():
         #self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
         self.create_QR_Code_Button.grid(column=1, row=1, sticky=(W),padx=(0,20))
 
-        self.copy_QR_Code_Button = ttk.Button(self.second_grid, text="Zwischenablage kopieren", command=self.copyQRCodeToClipboard, state=DISABLED)
+        self.copy_QR_Code_Button = ttk.Button(self.second_grid, text="In Zwischenablage kopieren", command=self.copyQRCodeToClipboard, state=DISABLED)
         #self.copy_QR_Code_Button.grid(column=3, row=9, sticky=(W),padx=(20,20))
         self.copy_QR_Code_Button.grid(column=2, row=1, sticky=(W),padx=(0,0))
 
