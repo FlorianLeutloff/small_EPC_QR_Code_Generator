@@ -26,7 +26,7 @@ class MainWindow():
         self.remittance_text = StringVar() #optional
         self.information = StringVar() #optional
 
-        self.dimension = StringVar()
+        self.dimension = StringVar(value=40)
 
         self.file_name_addition = StringVar()
 
@@ -111,6 +111,11 @@ class MainWindow():
         self.create_QR_Code_Button = ttk.Button(self.second_grid, text="QRCode erstellen", command=self.createQRCode)
         #self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
         self.create_QR_Code_Button.grid(column=1, row=1, sticky=(W),padx=(0,20))
+
+
+        ttk.Label(self.second_grid, text="Bildgröße(Breite/Höhe):").grid(column=1, row=2, sticky=(W),padx=(0,20), pady=(10,10))
+        self.dimension_text_entry = ttk.Entry(self.second_grid, textvariable=self.dimension)
+        self.dimension_text_entry.grid(column=2, row=2,sticky=(W),padx=(0,20), pady=(10,10))
 
         ### IF an automatic clipboard is not enabled in the settings, then the button and functionality to copy to the clipboard is made visible to the user ###
         if(self.automatic_clipboard.get()=="0"):
@@ -356,7 +361,7 @@ class MainWindow():
         #print(result)
         if(result==""):
             QR_String = createQRString(optional_array=optional_array,mandatory_array=mandatory_array)
-            qrcode.make(QR_String)
+            #qrcode.make(QR_String)
             image2 = qrcode.make(QR_String)
             try: 
                 file_name_addition_var = self.file_name_addition.get()
@@ -367,7 +372,7 @@ class MainWindow():
                 file_name_addition_var = "File_Name_Error"
                 pass
             filename = createFileName(file_name_addition_var=file_name_addition_var)
-            image2.save(filename)
+            image2.resize((int(self.dimension.get()),int(self.dimension.get()))).save(filename)
             if(os.path.exists(filename)):
                 ### Copy to Clipboard function regulation ###
                 self.last_filename = filename
