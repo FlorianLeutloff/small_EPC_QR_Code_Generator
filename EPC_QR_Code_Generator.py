@@ -7,7 +7,7 @@ import os
 import datetime
 import io
 import PIL.Image
-import win32clipboard
+import clipboard
 
 class MainWindow():
     def __init__(self, mainframe):
@@ -25,6 +25,8 @@ class MainWindow():
         self.remittance_reference = StringVar() #optional
         self.remittance_text = StringVar() #optional
         self.information = StringVar() #optional
+
+        self.dimension = StringVar()
 
         self.file_name_addition = StringVar()
 
@@ -150,13 +152,10 @@ class MainWindow():
                 image = PIL.Image.open(self.last_filename)
                 memory_image = io.BytesIO()
                 image.convert("RGB").save(memory_image, "BMP")
-                byte_array = memory_image.getvalue()[14:]
+                clipboard.copy_image(image)
+                #byte_array = memory_image.getvalue()[14:]
                 memory_image.close()
                 image.close()
-                win32clipboard.OpenClipboard()
-                win32clipboard.EmptyClipboard()
-                win32clipboard.SetClipboardData(win32clipboard.CF_DIB, byte_array)
-                win32clipboard.CloseClipboard()
             except:
                 self.creation_notification_label.config(text="009 - Fehler bei Kopie in die Zwischenablage, wenden Sie sich an den Hersteller")
                 self.creation_notification_label.config(foreground="red")                   
