@@ -36,10 +36,22 @@ class MainWindow():
         self.last_filename = ""
 
         if(os.path.exists("settings.txt")):
+            settings_dictionary = {}
             settings_file = open("settings.txt","r")
             lines = settings_file.readlines()
-            settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n",""),"autoclipboard":lines[3].replace("\n",""), "dimension":lines[4].replace("\n","")}
-            settings_file.close()
+            if(len(lines) > 4):
+                settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n",""),"autoclipboard":lines[3].replace("\n",""), "dimension":lines[4].replace("\n","")}
+                settings_file.close()
+                pass
+            else:
+                settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n",""),"autoclipboard":lines[3].replace("\n",""), "dimension": str(self.dimension_default)}
+                settings_file.close()
+                settings_file = open("settings.txt","w")
+                lines[len(lines)-1] = lines[len(lines)-1] + "\n"
+                lines.append(str(self.dimension_default))
+                settings_file.writelines(lines)
+                settings_file.close()
+                pass
         else:
             settings_dictionary = {"service_tag":"BCD","character_set":"1","identification":"SCT","autoclipboard":"1","dimension":"100"}
             new_settings_file = open("settings.txt","a")
@@ -88,6 +100,19 @@ class MainWindow():
         self.save_userdata_button.grid(column=1, row=8, sticky=(W))
 
 
+        self.first_grid = ttk.Frame(mainframe)
+        self.first_grid.grid(column=1, row=10, sticky=(W))
+
+        ttk.Label(self.first_grid, text="Bildgröße(Breite/Höhe):").grid(column=1, row=1, sticky=(W))
+
+
+        self.edit_dimension_Button = ttk.Button(self.first_grid, text="Bearbeiten", command=self.setDimension)
+        self.edit_dimension_Button.grid(column=2, row=2 ,sticky=(W))
+
+        self.dimension_text_entry = ttk.Entry(self.first_grid, textvariable=self.dimension, state=DISABLED)
+        self.dimension_text_entry.grid(column=1, row=2,sticky=(W))        
+
+
         ### USER INPUT ###
         ttk.Label(mainframe, text="Geldbetrag:").grid(column=2, row=1, sticky=(W),padx=(20,20))
         self.amount_entry = ttk.Entry(mainframe, width = entry_field_width, textvariable=self.amount)
@@ -116,12 +141,6 @@ class MainWindow():
         #self.create_QR_Code_Button.grid(column=2, row=9, sticky=(W),padx=(20,20))
         self.create_QR_Code_Button.grid(column=1, row=1, sticky=(W),padx=(0,20))
 
-
-        self.edit_dimension_Button = ttk.Button(self.second_grid, text="Bearbeiten", command=self.setDimension)
-        self.edit_dimension_Button.grid(column=3, row=2, padx=(0,20), pady=(10,10))
-        ttk.Label(self.second_grid, text="Bildgröße(Breite/Höhe):").grid(column=1, row=2, sticky=(W),padx=(0,20), pady=(10,10))
-        self.dimension_text_entry = ttk.Entry(self.second_grid, width=10, textvariable=self.dimension, state=DISABLED)
-        self.dimension_text_entry.grid(column=2, row=2,sticky=(W),padx=(0,20), pady=(10,10))
 
         ### IF an automatic clipboard is not enabled in the settings, then the button and functionality to copy to the clipboard is made visible to the user ###
         if(self.automatic_clipboard.get()=="0"):
