@@ -11,6 +11,8 @@ import clipboard
 
 class MainWindow():
     def __init__(self, mainframe):
+        self.dimension_default = 100 
+        self.dimension_edit_open = BooleanVar(value=False)
         entry_field_width = 40
         self.user_data_entry_startup = False
         self.service_tag = StringVar()
@@ -26,7 +28,7 @@ class MainWindow():
         self.remittance_text = StringVar() #optional
         self.information = StringVar() #optional
 
-        self.dimension = StringVar(value=40)
+        self.dimension = StringVar()
 
         self.file_name_addition = StringVar()
 
@@ -36,21 +38,23 @@ class MainWindow():
         if(os.path.exists("settings.txt")):
             settings_file = open("settings.txt","r")
             lines = settings_file.readlines()
-            settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n",""),"autoclipboard":lines[3].replace("\n","")}
+            settings_dictionary = {"service_tag":lines[0].replace("\n",""),"character_set":lines[1].replace("\n",""),"identification":lines[2].replace("\n",""),"autoclipboard":lines[3].replace("\n",""), "dimension":lines[4].replace("\n","")}
             settings_file.close()
         else:
-            settings_dictionary = {"service_tag":"BCD","character_set":"1","identification":"SCT","autoclipboard":"1"}
+            settings_dictionary = {"service_tag":"BCD","character_set":"1","identification":"SCT","autoclipboard":"1","dimension":"100"}
             new_settings_file = open("settings.txt","a")
             new_settings_file.write(settings_dictionary["service_tag"]+"\n")
             new_settings_file.write(settings_dictionary["character_set"]+"\n")
             new_settings_file.write(settings_dictionary["identification"]+"\n")
-            new_settings_file.write(settings_dictionary["autoclipboard"])
+            new_settings_file.write(settings_dictionary["autoclipboard"]+"\n")
+            new_settings_file.write(settings_dictionary["dimension"])
             new_settings_file.close()
             pass
         self.service_tag.set(settings_dictionary["service_tag"])
         self.character_set.set(settings_dictionary["character_set"])
         self.identification.set(settings_dictionary["identification"])
         self.automatic_clipboard.set(settings_dictionary["autoclipboard"])
+        self.dimension.set(settings_dictionary["dimension"])
 
         if(os.path.exists("user_data.txt")):
             user_data_file = open("user_data.txt","r")
@@ -113,8 +117,10 @@ class MainWindow():
         self.create_QR_Code_Button.grid(column=1, row=1, sticky=(W),padx=(0,20))
 
 
+        self.edit_dimension_Button = ttk.Button(self.second_grid, text="Bearbeiten", command=self.setDimension)
+        self.edit_dimension_Button.grid(column=3, row=2, padx=(0,20), pady=(10,10))
         ttk.Label(self.second_grid, text="Bildgröße(Breite/Höhe):").grid(column=1, row=2, sticky=(W),padx=(0,20), pady=(10,10))
-        self.dimension_text_entry = ttk.Entry(self.second_grid, textvariable=self.dimension)
+        self.dimension_text_entry = ttk.Entry(self.second_grid, width=10, textvariable=self.dimension, state=DISABLED)
         self.dimension_text_entry.grid(column=2, row=2,sticky=(W),padx=(0,20), pady=(10,10))
 
         ### IF an automatic clipboard is not enabled in the settings, then the button and functionality to copy to the clipboard is made visible to the user ###
@@ -144,6 +150,7 @@ class MainWindow():
             self.startup_label.grid(column=1, row=9, sticky=(W))
             pass           
         pass
+     
     ### Copies the last created QR Code from the filepath into the clipboard to be pasted elsewhere ###
     def copyQRCodeToClipboard(self):
         if(self.last_filename == "" or self.last_filename is None):
@@ -225,6 +232,35 @@ class MainWindow():
     
     def destroyError(self):
         self.error_message_label.grid_remove()
+        pass
+
+    def setDimension(self):
+        if(self.dimension_edit_open.get()):
+            self.dimension_edit_open.set(False)
+            self.edit_dimension_Button.configure(text="Bearbeiten")
+            self.dimension_text_entry.config(state=DISABLED)
+            if(self.dimension.get()):
+                settings_file = open("settings.txt","r")
+                lines = settings_file.readlines()
+                settings_file.close()
+                lines[4] = self.dimension.get()
+                settings_file = open("settings.txt","w")
+                settings_file.writelines(lines)
+                settings_file.close()
+                pass
+            else:
+                self.dimension.set(self.dimension_default)
+                self.creation_notification_label.config(text="Keine leeren Werte für die Bildgröße erlaubt. Rücksetzung auf Standardwert")
+                self.creation_notification_label.config(foreground="red")                   
+                self.creation_notification_label.grid(column=2,row=10, sticky=(W),padx=(20,20))
+                self.creation_notification_label.after(5000,self.destroyNotification)        
+                pass
+            pass
+        else:
+            self.edit_dimension_Button.config(text="Speichern")
+            self.dimension_edit_open.set(True)
+            self.dimension_text_entry.configure(state="ENABLED")
+            pass
         pass
 
     def createQRCode(self):
